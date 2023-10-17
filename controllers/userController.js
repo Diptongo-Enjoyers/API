@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
+import AppError from "../utils/AppError.js";
 
-export const getUsers = async (req, res) => {
+export const getUsers = async (req, res, next) => {
   try {
     // Obtener todos los usuarios de la base de datos
     const users = await User.find();
@@ -8,34 +9,28 @@ export const getUsers = async (req, res) => {
     // Enviar una respuesta al cliente
     res.status(200).json(users);
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Ha ocurrido un error al obtener los usuarios" });
+    next(error);
   }
 };
 
-export const getUserById = async (req, res) => {
+export const getUserById = async (req, res, next) => {
   try {
     const { id } = req.params;
 
     // Buscar un usuario por su ID en la base de datos
     const user = await User.findById(id);
     if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      throw new AppError(404, "Usuario no encontrado");
     }
 
     // Enviar una respuesta al cliente
     res.status(200).json(user);
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Ha ocurrido un error al obtener el usuario" });
+    next(error);
   }
 };
 
-export const updateUser = async (req, res) => {
+export const updateUser = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { email, password, username, name, address, phone, clearance } =
@@ -44,7 +39,7 @@ export const updateUser = async (req, res) => {
     // Buscar un usuario por su ID en la base de datos
     const user = await User.findById(id);
     if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      throw new AppError(404, "Usuario no encontrado");
     }
 
     if (email) user.email = email;
@@ -60,21 +55,18 @@ export const updateUser = async (req, res) => {
     // Enviar una respuesta al cliente
     res.status(200).json(user);
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Ha ocurrido un error al actualizar el usuario" });
+    next(error);
   }
 };
 
-export const deleteUser = async (req, res) => {
+export const deleteUser = async (req, res, next) => {
   try {
     const { id } = req.params;
 
     // Buscar un usuario por su ID en la base de datos
     const user = await User.findById(id);
     if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      throw new AppError(404, "Usuario no encontrado");
     }
 
     // Eliminar el usuario de la base de datos
@@ -83,9 +75,6 @@ export const deleteUser = async (req, res) => {
     // Enviar una respuesta al cliente
     res.status(200).json(user);
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Ha ocurrido un error al eliminar el usuario" });
+    next(error);
   }
 };
