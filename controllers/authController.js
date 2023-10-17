@@ -58,7 +58,7 @@ export const login = async (req, res) => {
     }
 
     // Generar un token de acceso
-    const accessToken = jwt.sign({ userId: user._id }, config.secretKey);
+    const accessToken = jwt.sign({ userId: user._id }, config.SECRET_KEY);
 
     // Enviar una respuesta al cliente
     res.status(200).json({ accessToken });
