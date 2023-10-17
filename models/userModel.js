@@ -1,10 +1,6 @@
 // src/models/userModel.js
 import mongoose from "mongoose";
-
-const Admin = 0;
-const Worker = 1;
-const Donator = 2;
-const Receiver = 3;
+import config from "../config.js";
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -21,7 +17,7 @@ const userSchema = new mongoose.Schema({
   phone: { type: Number, required: true },
   clearance: {
     type: Number,
-    enum: [Admin, Worker, Donator, Receiver],
+    enum: [config.ADMIN, config.WORKER, config.DONATOR, config.RECEIVER],
     required: true,
   },
 });
