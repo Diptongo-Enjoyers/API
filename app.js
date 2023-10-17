@@ -1,5 +1,6 @@
 // app.js
 import express from "express";
+import errorHandler from "./middlewares/errorHandler.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 
@@ -11,5 +12,8 @@ app.use(express.json());
 // Configurar rutas
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
+
+// Configurar middleware para manejar errores
+app.use(errorHandler);
 
 export default app;
