@@ -30,7 +30,7 @@ export const register = async (req, res) => {
     await newUser.save();
 
     // Generar un token de acceso
-    const accessToken = jwt.sign({ userId: newUser._id }, config.secretKey);
+    const accessToken = jwt.sign({ userId: newUser._id }, config.SECRET_KEY);
 
     // Enviar una respuesta al cliente
     res.status(201).json({ accessToken });
