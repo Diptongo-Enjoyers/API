@@ -60,7 +60,7 @@ export const login = async (req, res, next) => {
     const accessToken = jwt.sign({ userId: user._id }, config.SECRET_KEY);
 
     // Enviar una respuesta al cliente
-    res.status(200).json("accessToken");
+    res.status(200).json({ accessToken });
   } catch (error) {
     next(error);
   }
