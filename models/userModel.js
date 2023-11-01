@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
   phone: { type: Number, required: true },
   clearance: {
     type: Number,
-    enum: [config.ADMIN, config.WORKER, config.DONATOR, config.RECEIVER],
+    enum: [config.ADMIN_CLEARANCE, config.WORKER_CLEARANCE, config.DONATOR_CLEARANCE, config.RECEIVER_CLEARANCE],
     required: true,
   },
 });

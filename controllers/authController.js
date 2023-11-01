@@ -27,7 +27,8 @@ export const register = async (req, res, next) => {
       name,
       address,
       phone,
-      clearance,
+      clearance
+
     });
     await newUser.save();
 
