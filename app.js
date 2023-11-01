@@ -13,6 +13,10 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 
+app.get("/", (req, res) => {
+  res.send("API funcionando");
+});
+
 // Configurar middleware para manejar errores
 app.use(errorHandler);
 
