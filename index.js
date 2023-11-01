@@ -6,7 +6,12 @@ import cors from "cors";
 // Conectarse a la base de datos de MongoDB
 connectDB();
 
-app.use(cors({ origin: true, credentials: true }));
+app.use(
+  cors({
+    origin: "http://localhost:8081",
+    credentials: true,
+  }),
+);
 
 // Iniciar el servidor
 app.listen(3000, () => {
