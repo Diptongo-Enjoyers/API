@@ -6,8 +6,6 @@ import cors from "cors";
 // Conectarse a la base de datos de MongoDB
 connectDB();
 
-const cors = require('cors');
-
 app.use(cors({ origin: true, credentials: true }));
 
 // Iniciar el servidor
