@@ -18,7 +18,7 @@ export const register = async (req, res, next) => {
       );
     }
 
-    const existingUserUsername = await user.findOne({ username });
+    const existingUserUsername = await User.findOne({ username });
     if (existingUserUsername) {
       throw new AppError(
         400,
@@ -34,6 +34,7 @@ export const register = async (req, res, next) => {
       username,
       clearance,
     });
+
     await newUser.save();
 
     // Generar un token de acceso
