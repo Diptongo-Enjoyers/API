@@ -1,11 +1,11 @@
-import { Express } from "express";
+import Express from "express";
 
-import{
-    getNews,
-    getNewsById,
-    createNews,
-    updateNews,
-    deleteNews  
+import {
+  getNews,
+  getNewsById,
+  createNews,
+  updateNews,
+  deleteNews,
 } from "../controllers/newsController.js";
 
 import authenticateToken from "../middlewares/authenticateToken.js";
@@ -16,7 +16,7 @@ const router = Express.Router();
 
 router.get("/", authenticateToken, getNews);
 router.get("/:id", authenticateToken, getNewsById);
-router.post("/", authenticateToken, createNews);
+router.post("/createNews", authenticateToken, createNews);
 router.patch("/:id", authenticateToken, updateNews);
 router.delete("/:id", authenticateToken, deleteNews);
 
