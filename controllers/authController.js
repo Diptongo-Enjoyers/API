@@ -18,15 +18,20 @@ export const register = async (req, res, next) => {
       );
     }
 
+    const existingUserUsername = await user.findOne({ username });
+    if (existingUserUsername) {
+      throw new AppError(
+        400,
+        "Ya existe un usuario con el mismo nombre de usuario",
+      );
+    }
+
     // Crear un nuevo usuario
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
       email,
       password: hashedPassword,
       username,
-      name,
-      address,
-      phone,
       clearance,
     });
     await newUser.save();
