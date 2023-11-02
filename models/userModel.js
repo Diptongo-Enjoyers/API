@@ -12,12 +12,17 @@ const userSchema = new mongoose.Schema({
   },
   password: { type: String, required: true },
   username: { type: String, required: true, unique: true },
-  name: { type: String, required: true },
-  address: { type: String, required: true },
-  phone: { type: Number, required: true },
+  name: { type: String },
+  address: { type: String },
+  phone: { type: Number },
   clearance: {
     type: Number,
-    enum: [config.ADMIN_CLEARANCE, config.WORKER_CLEARANCE, config.DONATOR_CLEARANCE, config.RECEIVER_CLEARANCE],
+    enum: [
+      config.ADMIN_CLEARANCE,
+      config.WORKER_CLEARANCE,
+      config.DONATOR_CLEARANCE,
+      config.RECEIVER_CLEARANCE,
+    ],
     required: true,
   },
 });
