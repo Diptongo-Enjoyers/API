@@ -8,6 +8,6 @@ export default function errorHandler(error, req, res, next) {
   } else {
     return res
       .status(500)
-      .json({ error: { status: 500, message: "Internal server error" } });
+      .json({ error: { status: 500, message: error.message } });
   }
 }
