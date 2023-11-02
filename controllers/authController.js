@@ -26,6 +26,13 @@ export const register = async (req, res, next) => {
       );
     }
 
+    if (clearance === config.ADMIN_CLEARANCE || clearance === config.WORKER_CLEARANCE) {
+      throw new AppError(
+        400,
+        "No puedes registrarte como administrador o trabajador",
+      );
+    }
+
     // Crear un nuevo usuario
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
