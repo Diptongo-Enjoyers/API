@@ -35,13 +35,16 @@ export const createNews = async (req, res, next) => {
             throw new AppError(403, 'No tienes permiso para realizar esta acción');
         }
 
+
+        const { title, body, date, image } = req.body;
+
         const newNews = new News({
-            title,
+            title,  
             body,
             date,
             image,
             author: req.user.username,
-            userId: req.user._id 
+            userID: req.user.id 
         });
         
         await newNews.save();
@@ -51,9 +54,10 @@ export const createNews = async (req, res, next) => {
 
     } catch (err) {
         // Maneja los errores aquí
-        res.status(500).send('Error del servidor');
+        res.status(500).json({ error: err.message });
     }
 };
+
 
 
 export const updateNews = async (req, res, next) => {

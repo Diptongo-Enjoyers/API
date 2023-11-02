@@ -3,6 +3,7 @@ import express from "express";
 import errorHandler from "./middlewares/errorHandler.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import newsRoutes from "./routes/newsRoutes.js";
 import cors from "cors";
 
 const app = express();
