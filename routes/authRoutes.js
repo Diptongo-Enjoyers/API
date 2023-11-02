@@ -7,5 +7,6 @@ const router = express.Router();
 // Rutas para registrarse e iniciar sesión
 router.post("/register", register);
 router.post("/login", login);
+router.post("/registerWorker", register);
 
 export default router;
