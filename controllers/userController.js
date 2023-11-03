@@ -31,10 +31,8 @@ export const getUserById = async (req, res, next) => {
 };
 
 export const getMe = async (req, res, next) => {
-  try {
-    const id = req.user._id;
-
-    const user = await User.findById(id);
+  try{
+    const user = await User.findById(req.user.id);
     if (!user) {
       throw new AppError(404, "Usuario no encontrado");
     }
