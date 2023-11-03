@@ -32,9 +32,16 @@ export const getUserById = async (req, res, next) => {
 
 export const getMe = async (req, res, next) => {
   try {
-    const user = req.user;
+    const id = req.user._id;
+
+    const user = await User.findById(id);
+    if (!user) {
+      throw new AppError(404, "Usuario no encontrado");
+    }
+
     res.status(200).json(user);
-  } catch (error) {
+  }
+  catch (error) {
     next(error);
   }
 };
