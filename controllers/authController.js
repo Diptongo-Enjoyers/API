@@ -26,7 +26,10 @@ export const register = async (req, res, next) => {
       );
     }
 
-    if (clearance === config.ADMIN_CLEARANCE || clearance === config.WORKER_CLEARANCE) {
+    if (
+      clearance === config.ADMIN_CLEARANCE ||
+      clearance === config.WORKER_CLEARANCE
+    ) {
       throw new AppError(
         400,
         "No puedes registrarte como administrador o trabajador",
@@ -87,7 +90,7 @@ export const registerWorker = async (req, res, next) => {
     if (req.user.clearance !== config.ADMIN_CLEARANCE) {
       throw new AppError(403, "No tienes permiso para realizar esta acción");
     }
-    
+
     // Verificar si ya existe un usuario con el mismo correo electrónico
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -106,10 +109,7 @@ export const registerWorker = async (req, res, next) => {
     }
 
     if (clearance === config.ADMIN_CLEARANCE) {
-      throw new AppError(
-        400,
-        "No puedes registrarte como administrador",
-      );
+      throw new AppError(400, "No puedes registrarte como administrador");
     }
 
     // Crear un nuevo usuario
@@ -134,4 +134,4 @@ export const registerWorker = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-}
+};

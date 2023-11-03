@@ -40,8 +40,7 @@ export const getMe = async (req, res, next) => {
     }
 
     res.status(200).json(user);
-  }
-  catch (error) {
+  } catch (error) {
     next(error);
   }
 };
