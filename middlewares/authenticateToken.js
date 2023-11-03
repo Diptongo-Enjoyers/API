@@ -16,7 +16,10 @@ const authenticateToken = async (req, res, next) => {
     }
 
     const decodedToken = jwt.verify(accessToken, config.SECRET_KEY);
+
     const user = await User.findById(decodedToken.userId);
+
+    console.log(user);
     if (!user) {
       return res.status(401).json({ message: "Token de acceso no válido" });
     }
