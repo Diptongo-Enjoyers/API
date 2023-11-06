@@ -46,7 +46,8 @@ export const getMe = async (req, res, next) => {
 export const updateMe = async (req, res, next) => {
   try {
     const { id } = req.user;
-    const { name, username, phone, email, address } = req.body;
+    const { profilePictureURL, name, username, phone, email, address } =
+      req.body;
 
     // Buscar un usuario por su ID en la base de datos
     const user = await User.findById(id);
@@ -54,6 +55,7 @@ export const updateMe = async (req, res, next) => {
       throw new AppError(404, "Usuario no encontrado");
     }
 
+    if (profilePictureURL) user.profilePictureURL = profilePictureURL;
     if (name) user.name = name;
     if (username) user.username = username;
     if (phone) user.phone = phone;
