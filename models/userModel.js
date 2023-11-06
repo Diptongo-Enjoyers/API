@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema({
     ],
     required: true,
   },
+  profilePictureURL: { type: String },
 });
 
 const User = mongoose.model("Users", userSchema);
