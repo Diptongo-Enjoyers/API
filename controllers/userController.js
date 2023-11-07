@@ -108,7 +108,9 @@ export const updatePassword = async (req, res, next) => {
     if (!user) {
       throw new AppError(404, "Usuario no encontrado");
     }
-    user.password = req.password;
+
+    user.password = await bcrypt.hash(req.body.password, 10);
+
     await user.save();
     res.status(200).json(user);
   } catch (error) {

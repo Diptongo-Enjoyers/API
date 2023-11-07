@@ -68,7 +68,7 @@ export const login = async (req, res, next) => {
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new AppError(401, "Credenciales inválidas");
+      throw new AppError(401, user.password);
     }
 
     // Generar un token de acceso
