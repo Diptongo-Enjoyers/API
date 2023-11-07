@@ -2,7 +2,6 @@
 import jwt from "jsonwebtoken";
 import config from "../config.js";
 import User from "../models/userModel.js";
-import Token from "../models/tokenModel.js";
 
 const authenticateToken = async (req, res, next) => {
   try {
@@ -23,11 +22,7 @@ const authenticateToken = async (req, res, next) => {
     if (!user) {
       return res.status(401).json({ message: "Token de acceso no válido" });
     }
-
-    if (!Token.findOne({ token: accessToken })) {
-      return res.status(401).json({ message: "Token de acceso no válido" });
-    }
-
+    
     req.user = user;
     next();
   } catch (error) {
