@@ -23,11 +23,6 @@ const authenticateToken = async (req, res, next) => {
     if (!user) {
       return res.status(401).json({ message: "Token de acceso no válido" });
     }
-
-    if (!Token.findOne({ token: accessToken })) {
-      return res.status(401).json({ message: "Token de acceso no válido" });
-    }
-
     req.user = user;
     next();
   } catch (error) {
