@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import config from "../config.js";
 import User from "../models/userModel.js";
 import AppError from "../utils/AppError.js";
+import Token from "../models/tokenModel.js";
 
 export const register = async (req, res, next) => {
   try {
@@ -49,6 +50,13 @@ export const register = async (req, res, next) => {
     // Generar un token de acceso
     const accessToken = jwt.sign({ userId: newUser._id }, config.SECRET_KEY);
 
+    const newToken = new Token({
+      userId: newUser._id,
+      token: accessToken,
+    });
+
+    await newToken.save();
+
     // Enviar una respuesta al cliente
     res.status(201).json({ accessToken });
   } catch (error) {
@@ -71,12 +79,43 @@ export const login = async (req, res, next) => {
       throw new AppError(401, user.password);
     }
 
+    if (Token.findOne({ userId: user._id })) {
+      throw new AppError(401, "Usuario ya logueado");
+    }
     // Generar un token de acceso
     const accessToken = jwt.sign({ userId: user._id }, config.SECRET_KEY);
 
+    const newToken = new Token({
+      userId: user._id,
+      token: accessToken,
+    });
+
+    await newToken.save();
     // Enviar una respuesta al cliente
     res.status(200).json({ accessToken });
   } catch (error) {
+    next(error);
+  }
+};
+
+export const logout = async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new AppError(404, "Usuario no encontrado");
+    }
+
+    const token = await Token.findOne({ userId: userId });
+    if (!token) {
+      throw new AppError(404, "Token no encontrado");
+    }
+
+    await token.deleteOne();
+
+    res.status(200).json({ message: "Logout exitoso" });
+  } catch {
     next(error);
   }
 };
