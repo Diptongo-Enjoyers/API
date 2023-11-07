@@ -6,8 +6,7 @@ import AppError from "../utils/AppError.js";
 
 export const register = async (req, res, next) => {
   try {
-    const { email, password, username, name, address, phone, clearance } =
-      req.body;
+    const { email, username, clearance } = req.body;
 
     // Verificar si ya existe un usuario con el mismo correo electrónico
     const existingUser = await User.findOne({ email });
@@ -36,8 +35,8 @@ export const register = async (req, res, next) => {
       );
     }
 
-    // Crear un nuevo usuario
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(req.password, 10);
+
     const newUser = new User({
       email,
       password: hashedPassword,
