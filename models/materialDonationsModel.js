@@ -6,6 +6,8 @@ const materialDonationSchema = new mongoose.Schema({
     ref: "Users",
     required: true,
   },
+  material: { type: String, required: true },
+  quantity: { type: Number, required: true },
   creationDate: { type: Date, required: true },
   receptionDate: { type: Date, required: true },
   status: { type: String, required: true },
