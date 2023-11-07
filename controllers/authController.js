@@ -79,9 +79,6 @@ export const login = async (req, res, next) => {
       throw new AppError(401, user.password);
     }
 
-    if (Token.findOne({ userId: user._id })) {
-      throw new AppError(401, "Usuario ya logueado");
-    }
     // Generar un token de acceso
     const accessToken = jwt.sign({ userId: user._id }, config.SECRET_KEY);
 
@@ -100,8 +97,7 @@ export const login = async (req, res, next) => {
 
 export const logout = async (req, res, next) => {
   try {
-    const { userId } = req.body;
-
+    const { userId } = req.user._id;
     const user = await User.findById(userId);
     if (!user) {
       throw new AppError(404, "Usuario no encontrado");
