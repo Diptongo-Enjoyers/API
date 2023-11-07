@@ -4,9 +4,10 @@ import config from "../config.js";
 import User from "../models/userModel.js";
 import AppError from "../utils/AppError.js";
 
+
 export const register = async (req, res, next) => {
   try {
-    const { email, password, username, name, address, phone, clearance } =
+    const { email, username, clearance } =
       req.body;
 
     // Verificar si ya existe un usuario con el mismo correo electrónico
@@ -36,8 +37,8 @@ export const register = async (req, res, next) => {
       );
     }
 
-    // Crear un nuevo usuario
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(req.password, 10);
+
     const newUser = new User({
       email,
       password: hashedPassword,

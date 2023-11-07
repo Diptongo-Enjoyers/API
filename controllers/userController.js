@@ -1,5 +1,7 @@
 import User from "../models/userModel.js";
 import AppError from "../utils/AppError.js";
+import config from "../config.js";
+import bcrypt from "bcrypt";
 
 export const getUsers = async (req, res, next) => {
   try {
@@ -73,6 +75,7 @@ export const updateMe = async (req, res, next) => {
 
 export const updateUser = async (req, res, next) => {
   try {
+    if(req.user.clearance !== config.ADMIN_CLEARANCE) throw new AppError(403, "No tienes permisos para realizar esta acción");
     const { id } = req.params;
     const { email, password, username, name, address, phone, clearance } =
       req.body;
@@ -84,12 +87,10 @@ export const updateUser = async (req, res, next) => {
     }
 
     if (email) user.email = email;
-    if (password) user.password = await bcrypt.hash(password, 10);
     if (username) user.username = username;
     if (name) user.name = name;
     if (address) user.address = address;
     if (phone) user.phone = phone;
-    if (clearance) user.clearance = clearance;
 
     await user.save();
 
@@ -100,8 +101,23 @@ export const updateUser = async (req, res, next) => {
   }
 };
 
+export const updatePassword = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      throw new AppError(404, "Usuario no encontrado");
+    }
+    user.password = req.password;
+    await user.save();
+    res.status(200).json(user);
+  }catch (error) {
+    next(error);
+  }
+};
+
 export const deleteUser = async (req, res, next) => {
   try {
+    if(req.user.clearance !== config.ADMIN_CLEARANCE) throw new AppError(403, "No tienes permisos para realizar esta acción");
     const { id } = req.params;
 
     // Buscar un usuario por su ID en la base de datos
