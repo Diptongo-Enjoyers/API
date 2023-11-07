@@ -43,6 +43,34 @@ export const getMe = async (req, res, next) => {
   }
 };
 
+export const updateMe = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+    const { profilePictureURL, name, username, phone, email, address } =
+      req.body;
+
+    // Buscar un usuario por su ID en la base de datos
+    const user = await User.findById(id);
+    if (!user) {
+      throw new AppError(404, "Usuario no encontrado");
+    }
+
+    if (profilePictureURL) user.profilePictureURL = profilePictureURL;
+    if (name) user.name = name;
+    if (username) user.username = username;
+    if (phone) user.phone = phone;
+    if (email) user.email = email;
+    if (address) user.address = address;
+
+    await user.save();
+
+    // Enviar una respuesta al cliente
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const updateUser = async (req, res, next) => {
   try {
     const { id } = req.params;

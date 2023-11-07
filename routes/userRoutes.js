@@ -6,6 +6,7 @@ import {
   getUserById,
   getMe,
   updateUser,
+  updateMe,
   deleteUser,
 } from "../controllers/userController.js";
 import authenticateToken from "../middlewares/authenticateToken.js";
@@ -15,6 +16,7 @@ const router = express.Router();
 // Rutas para obtener y modificar los datos de los usuarios
 router.get("/", authenticateToken, getUsers);
 router.get("/getMe", authenticateToken, getMe);
+router.patch("/updateMe", authenticateToken, updateMe);
 router.get("/:id", authenticateToken, getUserById);
 router.patch("/:id", authenticateToken, updateUser);
 router.delete("/:id", authenticateToken, deleteUser);
