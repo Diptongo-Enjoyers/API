@@ -97,7 +97,8 @@ export const login = async (req, res, next) => {
 
 export const logout = async (req, res, next) => {
   try {
-    const { userId } = req.user._id;
+    const  userId  = req.user._id;
+
     const user = await User.findById(userId);
     if (!user) {
       throw new AppError(404, "Usuario no encontrado");
@@ -111,7 +112,7 @@ export const logout = async (req, res, next) => {
     await token.deleteOne();
 
     res.status(200).json({ message: "Logout exitoso" });
-  } catch {
+  } catch (error) {
     next(error);
   }
 };
