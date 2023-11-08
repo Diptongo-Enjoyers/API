@@ -57,7 +57,10 @@ export const getMaterialDonationById = async (req, res, next) => {
     if (!materialDonation) {
       throw new AppError(404, "Donación no encontrada");
     }
-
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const registerMonetaryDonation = async (req, res, next) => {
     try{
@@ -153,5 +156,3 @@ export const updateMaterialDonation = async (req, res, next) => {
         next(error);
     }
 }
-
-
