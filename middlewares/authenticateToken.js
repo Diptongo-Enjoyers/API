@@ -20,6 +20,10 @@ const authenticateToken = async (req, res, next) => {
 
     const user = await User.findById(decodedToken.userId);
 
+    if(!Token.findOne({ token: accessToken })){
+      return res.status(401).json({ message: "Token de acceso baneado" });
+    }
+
     if (!user) {
       return res.status(401).json({ message: "Token de acceso no válido" });
     }

@@ -98,7 +98,7 @@ export const login = async (req, res, next) => {
 export const logout = async (req, res, next) => {
   try {
     const  userId  = req.user._id;
-
+    console.log(req.user.username);
     const user = await User.findById(userId);
     if (!user) {
       throw new AppError(404, "Usuario no encontrado");
