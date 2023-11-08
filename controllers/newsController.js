@@ -97,17 +97,15 @@ export const deleteNews = async (req, res, next) => {
 
     const { id } = req.params;
 
-    // Verificar si la noticia existe
-    const news = await News.findById(id);
+    // Eliminar la noticia directamente sin necesidad de buscarla previamente
+    const news = await News.findByIdAndDelete(id);
+
     if (!news) {
       throw new AppError(
         404,
         "No se ha encontrado ninguna noticia con el id proporcionado",
       );
     }
-
-    // Eliminar la noticia
-    await news.remove();
 
     // Enviar una respuesta al cliente
     res.status(204).json();
