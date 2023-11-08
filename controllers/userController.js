@@ -124,17 +124,15 @@ export const deleteUser = async (req, res, next) => {
       throw new AppError(403, "No tienes permisos para realizar esta acción");
     const { id } = req.params;
 
-    // Buscar un usuario por su ID en la base de datos
-    const user = await User.findById(id);
-    if (!user) {
+    // Eliminar un usuario por su ID en la base de datos
+    const user = await User.findByIdAndDelete(id);
+
+    if (user) {
       throw new AppError(404, "Usuario no encontrado");
     }
 
-    // Eliminar el usuario de la base de datos
-    await user.remove();
-
     // Enviar una respuesta al cliente
-    res.status(200).json(user);
+    res.status(204).json();
   } catch (error) {
     next(error);
   }
