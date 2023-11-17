@@ -65,7 +65,7 @@ export const register = async (req, res, next) => {
     const mailOptions = {
       from: config.USER_MAIL,
       to: email,
-      subject: 'Confirmación de Registro',
+      subject: "Confirmación de Registro",
       html: `
           <div style="font-family: Arial, sans-serif; color: #333;">
               <div style="text-align: center;">
@@ -80,7 +80,7 @@ export const register = async (req, res, next) => {
               <p>El equipo de BAMX</p>
           </div>
       `,
-  };
+    };
 
     // Enviar el correo electrónico
     transporter.sendMail(mailOptions, (error, info) => {
