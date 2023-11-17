@@ -65,9 +65,22 @@ export const register = async (req, res, next) => {
     const mailOptions = {
       from: config.USER_MAIL,
       to: email,
-      subject: "Confirmación de Registro",
-      text: `Hola ${username}, tu cuenta ha sido creada con éxito.`,
-    };
+      subject: 'Confirmación de Registro',
+      html: `
+          <div style="font-family: Arial, sans-serif; color: #333;">
+              <div style="text-align: center;">
+                  <img src="https://bamx.org.mx/wp-content/uploads/2023/10/RED-BAMX.png" alt="Logo BAMX" style="max-width: 200px;">
+                  <h1>Bienvenido a BAMX, ${username}!</h1>
+              </div>
+              <p>Estamos encantados de tenerte con nosotros. Tu cuenta ha sido creada con éxito.</p>
+              <p>Al unirte a nuestra comunidad, estás apoyando directamente al Banco de Alimentos de Jalisco en nuestra misión de luchar contra el hambre y el desperdicio de alimentos. Tu contribución hace una gran diferencia.</p>
+              <p>Si tienes alguna pregunta o necesitas asistencia, no dudes en contactarnos.</p>
+              <p>¡Gracias por ser parte de esta noble causa!</p>
+              <p>Saludos cordiales,</p>
+              <p>El equipo de BAMX</p>
+          </div>
+      `,
+  };
 
     // Enviar el correo electrónico
     transporter.sendMail(mailOptions, (error, info) => {
