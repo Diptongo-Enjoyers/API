@@ -4,6 +4,7 @@ import config from "../config.js";
 import User from "../models/userModel.js";
 import AppError from "../utils/AppError.js";
 import Token from "../models/tokenModel.js";
+import nodemailer from 'nodemailer';
 
 export const register = async (req, res, next) => {
   try {
@@ -45,8 +46,7 @@ export const register = async (req, res, next) => {
       clearance,
     });
 
-    await newUser.save();
-
+    
     // Generar un token de acceso
     const accessToken = jwt.sign({ userId: newUser._id }, config.SECRET_KEY);
 
@@ -55,7 +55,32 @@ export const register = async (req, res, next) => {
       token: accessToken,
     });
 
+    const transporter = nodemailer.createTransport({
+        service: 'gmail', // Especifica el servicio de correo electrónico
+        auth: {
+            user: config.USER_MAIL, // Tu correo de Gmail
+            pass: config.USER_MAIL_PASSWORD // Contraseña de tu correo de Gmail
+        }
+    });
+
+    const mailOptions = {
+      from: config.USER_MAIL,
+      to: email,
+      subject: 'Confirmación de Registro',
+      text: `Hola ${username}, tu cuenta ha sido creada con éxito.`
+    };
+
+    // Enviar el correo electrónico
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Correo electrónico enviado: ' + info.response);
+        }
+    }
+    );
     await newToken.save();
+    await newUser.save();
 
     // Enviar una respuesta al cliente
     res.status(201).json({ accessToken });
