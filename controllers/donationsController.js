@@ -162,3 +162,41 @@ export const updateMaterialDonation = async (req, res, next) => {
     next(error);
   }
 };
+
+export const deleteMaterialDonation = async (req, res, next) => {
+  try {
+    if (
+      req.user.clearance !== config.WORKER_CLEARANCE ||
+      req.user.clearance !== config.ADMIN_CLEARANCE
+    ) {
+      throw new AppError(403, "No tienes permiso para realizar esta acción");
+    }
+
+    const { id } = req.params;
+
+    const materialDonation = await MaterialDonation.findByIdAndDelete(id);
+
+    res.status(200).json(materialDonation);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export const deleteMonetaryDonation = async (req, res, next) => {
+  try {
+    if (
+      req.user.clearance !== config.WORKER_CLEARANCE ||
+      req.user.clearance !== config.ADMIN_CLEARANCE
+    ) {
+      throw new AppError(403, "No tienes permiso para realizar esta acción");
+    }
+
+    const { id } = req.params;
+
+    const monetaryDonation = await MonetaryDonation.findByIdAndDelete(id);
+
+    res.status(200).json(monetaryDonation);
+  } catch (error) {
+    next(error);
+  }
+}
