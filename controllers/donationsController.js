@@ -1,9 +1,7 @@
-import User from "../models/userModel";
-import AppError from "../utils/AppError";
-import config from "../config";
-import MaterialDonation from "../models/materialDonationsModel";
-import MonetaryDonation from "../models/monetaryDonationsModel";
-import bcrypt from "bcrypt";
+import AppError from "../utils/AppError.js";
+import config from "../config.js";
+import MaterialDonation from "../models/materialDonationsModel.js";
+import MonetaryDonation from "../models/monetaryDonationsModel.js";
 
 export const getMonetaryDonations = async (req, res, next) => {
   try {
@@ -18,7 +16,6 @@ export const getMonetaryDonations = async (req, res, next) => {
 export const getMaterialDonations = async (req, res, next) => {
   try {
     const materialDonations = await MaterialDonation.find();
-
     res.status(200).json(materialDonations);
   } catch (error) {
     next(error);
@@ -85,20 +82,17 @@ export const registerMonetaryDonation = async (req, res, next) => {
 
 export const registerMaterialDonation = async (req, res, next) => {
   try {
-    if (req.user.clearance !== config.DONATOR_CLEARANCE) {
-      throw new AppError(403, "No tienes permiso para realizar esta acción");
-    }
-    const { name, quantity, date, userId } = req.body;
+    const { materials, receptionDate } = req.body;
 
     const newMaterialDonation = new MaterialDonation({
-      name,
-      quantity,
-      date,
-      userId,
+      materials,
+      creationDate: new Date(),
+      receptionDate,
+      status: "Pendiente",
+      userId: req.user.id,
     });
 
     await newMaterialDonation.save();
-
     res.status(201).json(newMaterialDonation);
   } catch (error) {
     next(error);
@@ -136,27 +130,25 @@ export const updateMonetaryDonation = async (req, res, next) => {
 export const updateMaterialDonation = async (req, res, next) => {
   try {
     if (
-      req.user.clearance !== config.WORKER_CLEARANCE ||
+      req.user.clearance !== config.WORKER_CLEARANCE &&
       req.user.clearance !== config.ADMIN_CLEARANCE
     ) {
       throw new AppError(403, "No tienes permiso para realizar esta acción");
     }
 
     const { id } = req.params;
-    const { material, quantity, receptionDate, status } = req.body;
+    const { materials, receptionDate, status } = req.body;
 
     const materialDonation = await MaterialDonation.findById(id);
     if (!materialDonation) {
       throw new AppError(404, "Donación no encontrada");
     }
 
-    materialDonation.material = material;
-    materialDonation.quantity = quantity;
+    materialDonation.materials = materials; // Actualizar el array de materiales
     materialDonation.receptionDate = receptionDate;
     materialDonation.status = status;
 
     await materialDonation.save();
-
     res.status(200).json(materialDonation);
   } catch (error) {
     next(error);
@@ -166,21 +158,19 @@ export const updateMaterialDonation = async (req, res, next) => {
 export const deleteMaterialDonation = async (req, res, next) => {
   try {
     if (
-      req.user.clearance !== config.WORKER_CLEARANCE ||
+      req.user.clearance !== config.WORKER_CLEARANCE &&
       req.user.clearance !== config.ADMIN_CLEARANCE
     ) {
       throw new AppError(403, "No tienes permiso para realizar esta acción");
     }
 
     const { id } = req.params;
-
-    const materialDonation = await MaterialDonation.findByIdAndDelete(id);
-
-    res.status(200).json(materialDonation);
+    await MaterialDonation.findByIdAndDelete(id);
+    res.status(200).json({ message: "Donación eliminada con éxito" });
   } catch (error) {
     next(error);
   }
-}
+};
 
 export const deleteMonetaryDonation = async (req, res, next) => {
   try {
@@ -199,4 +189,4 @@ export const deleteMonetaryDonation = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-}
+};

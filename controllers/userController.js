@@ -91,6 +91,7 @@ export const updateUser = async (req, res, next) => {
     if (username) user.username = username;
     if (name) user.name = name;
     if (address) user.address = address;
+    if (clearance) user.clearance = clearance;
     if (phone) user.phone = phone;
 
     await user.save();
