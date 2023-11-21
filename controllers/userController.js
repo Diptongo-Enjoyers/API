@@ -127,10 +127,6 @@ export const deleteUser = async (req, res, next) => {
     // Eliminar un usuario por su ID en la base de datos
     const user = await User.findByIdAndDelete(id);
 
-    if (user) {
-      throw new AppError(404, "Usuario no encontrado");
-    }
-
     // Enviar una respuesta al cliente
     res.status(204).json();
   } catch (error) {
