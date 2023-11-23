@@ -11,4 +11,5 @@ export default {
   RECEIVER_CLEARANCE: 3,
   USER_MAIL: process.env.USER_MAIL,
   USER_MAIL_PASSWORD: process.env.USER_MAIL_PASSWORD,
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
 };
