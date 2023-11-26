@@ -5,6 +5,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import newsRoutes from "./routes/newsRoutes.js";
 import donationsRoutes from "./routes/donationsRoutes.js";
+import paymentsRoutes from "./routes/paymentsRoutes.js";
 import cors from "cors";
 
 const app = express();
@@ -19,6 +20,7 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/news", newsRoutes);
 app.use("/donations", donationsRoutes);
+app.use("/payments", paymentsRoutes);
 
 app.get("/", (req, res) => {
   res.send("API funcionando yei");
