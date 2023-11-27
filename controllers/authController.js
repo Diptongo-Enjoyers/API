@@ -5,6 +5,7 @@ import User from "../models/userModel.js";
 import AppError from "../utils/AppError.js";
 import Token from "../models/tokenModel.js";
 import nodemailer from "nodemailer";
+import authToken from "../models/authTokenModel.js";
 
 export const register = async (req, res, next) => {
   try {
@@ -100,6 +101,16 @@ export const register = async (req, res, next) => {
   }
 };
 
+// Configuración del transporte de correo electrónico
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: config.USER_MAIL,
+    pass: config.USER_MAIL_PASSWORD,
+  },
+});
+
+// Función de inicio de sesión
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -107,15 +118,87 @@ export const login = async (req, res, next) => {
     // Verificar si el correo electrónico y la contraseña son correctos
     const user = await User.findOne({ email });
     if (!user) {
-      throw new AppError(401, "Credenciales inválidas");
+      throw new Error("Credenciales inválidas");
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new AppError(401, user.password);
+      throw new Error("Contraseña incorrecta");
     }
 
-    // Generar un token de acceso
+    if (user.clearance === config.ADMIN_CLEARANCE || user.clearance === config.WORKER_CLEARANCE) {
+      // Generar un código de 6 dígitos
+      const verificationCode = Math.floor(100000 + Math.random() * 900000);
+
+      const mailOptions = {
+        from: config.USER_MAIL,
+        to: email,
+        subject: "Código de Verificación de BAMX",
+        html: `
+          <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px;">
+            <div style="text-align: center;">
+              <img src="https://bamx.org.mx/wp-content/uploads/2023/10/RED-BAMX.png" alt="Logo BAMX" style="max-width: 200px;">
+              <h2>¡Hola!</h2>
+            </div>
+            <p>Estamos emocionados de ayudarte a asegurar tu cuenta. Como parte de nuestro proceso de seguridad, necesitamos que verifiques tu identidad.</p>
+            <p style="text-align: center; font-size: 24px; margin: 20px 0; color: #007bff;"><strong>${verificationCode}</strong></p>
+            <p>Por favor, introduce este código en la página de inicio de sesión para completar el proceso de verificación.</p>
+            <p>Si no has intentado iniciar sesión recientemente, por favor ignora este correo electrónico y avísanos inmediatamente.</p>
+            <p>Gracias por ser parte de la comunidad BAMX y por ayudarnos a mantener segura tu cuenta.</p>
+            <p style="text-align: center;">Saludos,</p>
+            <p style="text-align: center;">El equipo de BAMX</p>
+          </div>
+        `
+      };
+      
+      await transporter.sendMail(mailOptions);
+
+      // Guardar el código de verificación en la base de datos
+      const newAuthToken = new authToken({  
+        userId: user._id,
+        authToken: verificationCode,
+      });
+      await newAuthToken.save();
+
+      return res.status(200).json({ message: "Verifica tu correo para el código de autenticación" });
+    } else {
+      const accessToken = jwt.sign({ userId: user._id }, config.SECRET_KEY);
+
+      const newToken = new Token({
+        userId: user._id,
+        token: accessToken,
+      });
+
+      await newToken.save();
+
+      return res.status(200).json({ accessToken });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const verifyAuthenticationCode = async (req, res, next) => {
+  try {
+    const { email, verificationCode } = req.body;
+
+    // Buscar el usuario y el token de autenticación asociado por email
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new Error("Usuario no encontrado");
+    }
+
+    const authTokenRecord = await authToken.findOne({ userId: user._id });
+    if (!authTokenRecord) {
+      throw new Error("Código de autenticación no encontrado");
+    }
+
+    // Verificar si el código de autenticación coincide
+    if (authTokenRecord.authToken !== verificationCode) {
+      throw new Error("Código de autenticación incorrecto");
+    }
+
+    // Si el código es correcto, generar un token de acceso
     const accessToken = jwt.sign({ userId: user._id }, config.SECRET_KEY);
 
     const newToken = new Token({
@@ -124,7 +207,10 @@ export const login = async (req, res, next) => {
     });
 
     await newToken.save();
-    // Enviar una respuesta al cliente
+
+    // Opcionalmente, eliminar el registro de authToken aquí para evitar su reutilización
+
+    // Enviar el token de acceso
     res.status(200).json({ accessToken });
   } catch (error) {
     next(error);
