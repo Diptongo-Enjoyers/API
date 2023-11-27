@@ -5,9 +5,13 @@ import MonetaryDonation from "../models/monetaryDonationsModel.js";
 
 export const getMonetaryDonations = async (req, res, next) => {
   try {
-    const monetaryDonations = await MonetaryDonation.find();
+    if(req.user.clearance === config.WORKER_CLEARANCE || req.user.clearance === config.ADMIN_CLEARANCE){
+      const monetaryDonations = await MonetaryDonation.find();
 
-    res.status(200).json(monetaryDonations);
+      res.status(200).json(monetaryDonations);
+    }else{
+      throw new AppError(403, "No tienes permiso para realizar esta acción");
+    }
   } catch (error) {
     next(error);
   }
@@ -15,8 +19,12 @@ export const getMonetaryDonations = async (req, res, next) => {
 
 export const getMaterialDonations = async (req, res, next) => {
   try {
-    const materialDonations = await MaterialDonation.find();
-    res.status(200).json(materialDonations);
+    if(req.user.clearance === config.WORKER_CLEARANCE || req.user.clearance === config.ADMIN_CLEARANCE){
+      const materialDonations = await MaterialDonation.find();
+      res.status(200).json(materialDonations);
+    }else{
+      throw new AppError(403, "No tienes permiso para realizar esta acción");
+    }
   } catch (error) {
     next(error);
   }
@@ -24,10 +32,14 @@ export const getMaterialDonations = async (req, res, next) => {
 
 export const getDonations = async (req, res, next) => {
   try {
-    const materialDonations = await MaterialDonation.find();
-    const monetaryDonations = await MonetaryDonation.find();
+    if(req.user.clearance === config.WORKER_CLEARANCE || req.user.clearance === config.ADMIN_CLEARANCE){
+      const materialDonations = await MaterialDonation.find();
+      const monetaryDonations = await MonetaryDonation.find();
 
-    res.status(200).json({ materialDonations, monetaryDonations });
+      res.status(200).json({ materialDonations, monetaryDonations });
+    } else {
+      throw new AppError(403, "No tienes permiso para realizar esta acción");
+    }
   } catch (error) {
     next(error);
   }
@@ -35,13 +47,17 @@ export const getDonations = async (req, res, next) => {
 
 export const getMonetaryDonationById = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const monetaryDonation = await MonetaryDonation.findById(id);
-    if (!monetaryDonation) {
-      throw new AppError(404, "Donación no encontrada");
-    }
+    if(req.user.clearance === config.WORKER_CLEARANCE || req.user.clearance === config.ADMIN_CLEARANCE){
+      const { id } = req.params;
+      const monetaryDonation = await MonetaryDonation.findById(id);
+      if (!monetaryDonation) {
+        throw new AppError(404, "Donación no encontrada");
+      }
 
-    res.status(200).json(monetaryDonation);
+      res.status(200).json(monetaryDonation);
+    } else {
+      throw new AppError(403, "No tienes permiso para realizar esta acción");
+    }
   } catch (error) {
     next(error);
   }
@@ -49,12 +65,42 @@ export const getMonetaryDonationById = async (req, res, next) => {
 
 export const getMaterialDonationById = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const materialDonation = await MaterialDonation.findById(id);
-    if (!materialDonation) {
-      throw new AppError(404, "Donación no encontrada");
+    if(req.user.clearance === config.WORKER_CLEARANCE || req.user.clearance === config.ADMIN_CLEARANCE){
+      const { id } = req.params;
+      const materialDonation = await MaterialDonation.findById(id);
+      if (!materialDonation) {
+        throw new AppError(404, "Donación no encontrada");
+      }
+      res.status(200).json(materialDonation);
+    } else {
+      throw new AppError(403, "No tienes permiso para realizar esta acción");
     }
-    res.status(200).json(materialDonation);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getMaterialDonationsByUserId = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const materialDonations = await MaterialDonation.find({ userId });
+    if (!materialDonations) {
+      throw new AppError(404, "No se encontraron donaciones");
+    }
+    res.status(200).json(materialDonations);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getMonetaryDonationsByUserId = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const monetaryDonations = await MonetaryDonation.find({ userId });
+    if (!monetaryDonations) {
+      throw new AppError(404, "No se encontraron donaciones");
+    }
+    res.status(200).json(monetaryDonations);
   } catch (error) {
     next(error);
   }
