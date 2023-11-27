@@ -199,14 +199,15 @@ export const updateMaterialDonation = async (req, res, next) => {
     }
 
     const { id } = req.params;
-    const { materials, receptionDate, status } = req.body;
+
+    const { receptionDate, status } = req.body;
 
     const materialDonation = await MaterialDonation.findById(id);
+
     if (!materialDonation) {
       throw new AppError(404, "Donación no encontrada");
     }
 
-    materialDonation.materials = materials; // Actualizar el array de materiales
     materialDonation.receptionDate = receptionDate;
     materialDonation.status = status;
 
