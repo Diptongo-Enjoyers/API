@@ -4,6 +4,7 @@ import errorHandler from "./middlewares/errorHandler.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import newsRoutes from "./routes/newsRoutes.js";
+import petRoutes from "./routes/vetAppRoutes.js";
 import donationsRoutes from "./routes/donationsRoutes.js";
 import paymentsRoutes from "./routes/paymentsRoutes.js";
 import cors from "cors";
@@ -21,6 +22,7 @@ app.use("/users", userRoutes);
 app.use("/news", newsRoutes);
 app.use("/donations", donationsRoutes);
 app.use("/payments", paymentsRoutes);
+app.use("/pets", petRoutes);
 
 app.get("/", (req, res) => {
   res.send("API funcionando yei");
