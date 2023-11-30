@@ -28,7 +28,7 @@ export const createPet = async (req, res, next) => {
   try {
     const { title, body, date, image } = req.body;
 
-    const newPet = new News({
+    const newPet = new Pet({
       title,
       body,
       date,
