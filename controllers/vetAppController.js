@@ -26,7 +26,7 @@ export const getPetById = async (req, res, next) => {
 
 export const createPet = async (req, res, next) => {
   try {
-    const { title, body, date, image } = req.body;
+    const { title, body, date, image, age } = req.body;
 
     const newPet = new Pet({
       title,
