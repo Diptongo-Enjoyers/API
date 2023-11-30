@@ -31,6 +31,7 @@ export const createPet = async (req, res, next) => {
     const newPet = new Pet({
       title,
       body,
+      age,
       date,
       image,
     });
