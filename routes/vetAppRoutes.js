@@ -6,14 +6,14 @@ import {
     createPet,
     deletePet,
 } from "../controllers/vetAppController.js";
-
+import authenticateToken from "../middlewares/authenticateToken.js";
 const router = express.Router();
 
 
-router.get("/", getPets);
-router.get("/:id", getPetById);
-router.post("/", createPet);
-router.delete("/:id", deletePet);
+router.get("/", getPets, authenticateToken);
+router.get("/:id", getPetById, authenticateToken);
+router.post("/", createPet, authenticateToken);
+router.delete("/:id", deletePet, authenticateToken);
 
 export default router;
 
