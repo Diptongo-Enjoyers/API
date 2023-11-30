@@ -33,8 +33,6 @@ export const createPet = async (req, res, next) => {
       body,
       date,
       image,
-      author: req.user.username,
-      userID: req.user.id,
     });
 
     await newPet.save();
