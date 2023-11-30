@@ -4,7 +4,7 @@ import config from "../config.js";
 
 export const getPets = async (req, res, next) => {
   try {
-    const pet = await pet.find();
+    const pet = await Pet.find();
 
     res.status(200).json(pet);
   } catch (error) {
