@@ -7,6 +7,7 @@ import newsRoutes from "./routes/newsRoutes.js";
 import petRoutes from "./routes/vetAppRoutes.js";
 import donationsRoutes from "./routes/donationsRoutes.js";
 import paymentsRoutes from "./routes/paymentsRoutes.js";
+import amezcuaPetRoutes from "./routes/amezcuaVetAppRoutes.js";
 import cors from "cors";
 
 const app = express();
@@ -23,6 +24,7 @@ app.use("/news", newsRoutes);
 app.use("/donations", donationsRoutes);
 app.use("/payments", paymentsRoutes);
 app.use("/pets", petRoutes);
+app.use("/amezcuaPets", amezcuaPetRoutes);
 
 app.get("/", (req, res) => {
   res.send("API funcionando yei");
