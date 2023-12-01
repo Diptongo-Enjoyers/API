@@ -25,11 +25,12 @@ export const getPetById = async (req, res, next) => {
 
 export const createPet = async (req, res, next) => {
   try {
-    const { name, age, weight } = req.body;
+    const { name, age, weight, imageURL } = req.body;
     const newPet = new Pet({
       name,
       age,
       weight,
+      imageURL,
     });
     await newPet.save();
     res.status(201).json(newPet);
